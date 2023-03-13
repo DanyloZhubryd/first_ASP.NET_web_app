@@ -1,2 +1,2 @@
-# shopping_app
+# first_ASPNET_web_app
 Pet project
