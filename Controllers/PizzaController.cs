@@ -1,24 +1,26 @@
+using first_ASPNET_web_app.Data;
 using first_ASPNET_web_app.Models;
-using first_ASPNET_web_app.Services;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 namespace first_ASPNET_web_app.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class PizzaController : ControllerBase
 {
-    public PizzaController()
+    private readonly PizzaContext _context;
+    public PizzaController(PizzaContext context)
     {
+        _context = context;
     }
 
     [HttpGet]
-    public ActionResult<List<Pizza>> GetAll() => PizzaService.GetAll();
+    public async Task<List<Pizza>> GetAll() => await _context.Pizza.ToListAsync();
 
     [HttpGet("{id}")]
-    public ActionResult<Pizza> Get(int id)
+    public async Task<ActionResult<Pizza>> Get(int id)
     {
-        var pizza = PizzaService.Get(id);
+        var pizza = await _context.Pizza.FindAsync(id);
 
         if (pizza is null)
             return NotFound();
@@ -27,35 +29,38 @@ public class PizzaController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create(Pizza pizza)
+    public async Task<IActionResult> Create(Pizza pizza)
     {
-        PizzaService.Create(pizza);
+        await _context.Pizza.AddAsync(pizza);
+        await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(Get), new { id = pizza.Id }, pizza);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, Pizza pizza)
+    public async Task<IActionResult> Update(int id, Pizza updatePizza)
     {
-        if (id != pizza.Id)
+        if (id != updatePizza.Id)
             return BadRequest();
 
-        var existingPizza = PizzaService.Get(id);
-        if (existingPizza is null)
+        var pizza = await _context.Pizza.FindAsync(id);
+        if (pizza is null)
             return NotFound();
 
-        PizzaService.Update(pizza);
-
+        pizza.update(updatePizza);
+        await _context.SaveChangesAsync();
+        
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> DeleteAsync(int id)
     {
-        var pizza = PizzaService.Get(id);
+        var pizza = await _context.Pizza.FindAsync(id);
         if (pizza is null)
             return NotFound();
 
-        PizzaService.Delete(id);
+        _context.Pizza.Remove(pizza);
+        await _context.SaveChangesAsync();
 
         return NoContent();
     }
