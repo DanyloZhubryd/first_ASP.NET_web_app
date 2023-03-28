@@ -10,13 +10,11 @@ public class Pizza
     [MaxLength(100)]
     public string? Name { get; set; }
 
-    [Required]
-    //[Range(typeof(bool), "true", "false")]
-    public bool IsGlutenFree { get; set; }
+    public bool? IsGlutenFree { get; set; }
 
     public void update(Pizza pizza)
     {
-        Name = pizza.Name;
-        IsGlutenFree = pizza.IsGlutenFree;
+        this.Name = pizza.Name;
+        this.IsGlutenFree = pizza.IsGlutenFree;
     }
 }

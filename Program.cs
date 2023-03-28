@@ -1,14 +1,15 @@
 using first_ASPNET_web_app.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("localhost");
 
-// Add services to the container.
+builder.Services.AddDbContext<PizzaContext>(options => options.UseNpgsql(connectionString));
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddDbContext<PizzaContext>(options => options.UseSqlite("Data Source=MyPizza.db"));
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
