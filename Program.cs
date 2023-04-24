@@ -1,11 +1,12 @@
 using first_ASPNET_web_app.Data;
+using first_ASPNET_web_app.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("localhost");
 
 builder.Services.AddDbContext<PizzaContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddScoped<IPizzaService, PizzaService>();
 
 builder.Services.AddControllers();
 
@@ -22,7 +23,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("swagger/v1/swagger.json", "WebAPI v1"));
 }
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection();   
 
 app.UseAuthorization();
 

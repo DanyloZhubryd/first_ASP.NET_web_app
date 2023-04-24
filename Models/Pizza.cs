@@ -1,5 +1,5 @@
-
 using System.ComponentModel.DataAnnotations;
+
 namespace first_ASPNET_web_app.Models;
 
 public class Pizza
